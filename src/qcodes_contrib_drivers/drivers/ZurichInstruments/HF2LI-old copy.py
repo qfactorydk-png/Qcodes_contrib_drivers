@@ -1,3 +1,4 @@
+
 from typing import Dict, List, Optional, Sequence, Any, Union
 from functools import partial
 import numpy as np
@@ -15,10 +16,21 @@ import qcodes as qc
 from qcodes.instrument.base import Instrument
 import qcodes.utils.validators as vals
 
-from qcodes.instrument.parameter import ParameterWithSetpoints, Parameter
+from qcodes.parameters import Parameter, ParameterWithSetpoints
 
 from qcodes.dataset.measurements import Measurement, res_type, DataSaver
-from qcodes.instrument.specialized_parameters import ElapsedTimeParameter
+from qcodes.parameters import ElapsedTimeParameter
+
+from typing import Dict, List, Optional, Sequence, Any, Union
+import numpy as np
+import logging
+log = logging.getLogger(__name__)
+
+import zhinst.utils
+import qcodes as qc
+from qcodes.instrument import Instrument
+import qcodes.validators as vals
+
 
 class HF2LI(Instrument):
     """Qcodes driver for Zurich Instruments HF2LI lockin amplifier.
@@ -41,7 +53,8 @@ class HF2LI(Instrument):
             to use the instrument as a lockin amplifier in X-Y mode with auxout channels 0 and 3.
         sigout2mixer: mapping from sigout to mixers. For default HF2LI {0:6, 1:7}
         num_sigout_mixer_channels: Number of mixer channels to enable on the sigouts. Default: 1.
-    """
+    
+        """
     OUTPUT_MAPPING = {-1: 'manual', 0: 'X', 1: 'Y', 2: 'R', 3: 'Theta'}
     def __init__(self, name: str, device: str, demod: int, sigout: int,
             auxouts: Dict[str, int], 

@@ -1,4 +1,5 @@
 from typing import Dict, Optional
+
 from functools import partial
 import logging
 import time
@@ -280,7 +281,7 @@ class HF2LI(Instrument):
             unit="Hz",
             label="Frequency",
             snapshot_value=False,
-            get_cmd=lambda: np.asarray(self.spectrum_samples[0][0]["grid"]),
+            get_cmd=lambda: self.spectrum_samples[0][0]["grid"],
             vals=vals.Arrays(shape=(self._spectrum_freq_length,)),
         )
 
@@ -332,14 +333,11 @@ class HF2LI(Instrument):
             )
 
     def _spectrum_freq_length(self) -> int:
-        if hasattr(self, "spectrum_samples"):
-            return int(len(self.spectrum_samples[0][0]["grid"]))
-
-        return int(2**self._bits - 1)
+        cols = self.daq_module.get("grid/cols")["grid"]["cols"][0]
+        return int(cols) - 1
 
     def _sweeper_get(self, name):
         """Wrap ZI sweeper.get."""
-
         value = self.sweeper.get(name)[name][0]
 
         if name == "samplecount":
@@ -353,13 +351,11 @@ class HF2LI(Instrument):
 
     def _set_ext_clk(self, val):
         """Set external 10 MHz clock."""
-
         path = f"/{self.dev_id}/system/extclk"
         self.daq.setInt(path, int(val))
 
     def _get_ext_clk(self):
         """Get external 10 MHz clock as bool."""
-
         path = f"/{self.dev_id}/system/extclk"
         val = self.daq.getInt(path)
         return bool(val)
