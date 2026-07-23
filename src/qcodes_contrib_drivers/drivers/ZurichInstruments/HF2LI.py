@@ -374,7 +374,7 @@ class HF2LI(Instrument):
             osc = self.osc
             mixer = self.sigout2mixer[osc]
             amplitude = self._get_sigout_amplitude(mixer, osc) / (2 * np.sqrt(2))
-            values = 20 * np.log10(self.samples[param] / amplitude)
+            values = 20 * np.log10(self.samples[param]) # / amplitude)
 
         return values
 
