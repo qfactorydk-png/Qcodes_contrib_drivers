@@ -513,7 +513,7 @@ class HF2LI(Instrument):
 
         return np.sqrt(2 ** (1 / o) - 1) / tc / (2 * np.pi)
 
-    def trigger_sweep(self):
+    def trigger_sweep(self, direction):
         sweeper = self.daq.sweep()
 
         sweeper.set("device", self.dev_id)
@@ -521,6 +521,7 @@ class HF2LI(Instrument):
         sweeper.set("scan", 0)
         sweeper.set("bandwidthcontrol", 0)
         sweeper.set("settling/inaccuracy", 1.0e-08)
+        sweeper.set('scan', direction)
 
         path = f"/{self.dev_id}/demods/{self.demod}/sample"
 

@@ -517,7 +517,7 @@ class HF2LI(Instrument):
 
         return np.sqrt(2 ** (1 / o) - 1) / tc / (2 * np.pi)
 
-    def trigger_sweep(self):
+    def trigger_sweep(self, direction:int=0):
         sweeper = self.daq.sweep()
 
         sweeper.set("device", self.dev_id)
@@ -533,7 +533,7 @@ class HF2LI(Instrument):
         sweeper.set("samplecount", self.sweeper_samplecount())
 
         self.timeconstant(self.timeconstant())
-
+        sweeper.set('scan', direction)
         sweeper.subscribe(path)
         sweeper.execute()
 
